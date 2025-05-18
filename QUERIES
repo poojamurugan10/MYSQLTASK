@@ -1,0 +1,107 @@
+/*retrive all the customers who placed order in the last 30 days*/
+select distinct * 
+from customers c /*c=customer*/
+join orders o on c.id = o.customer_id /*o=order*/
+where o.order_date >= curdate() - interval 30 day;
+
+ANS:
+ID  NAME        EMAIL              ADDRESS          ID  C.ID   O.DATE      TOTAL AMT
+1	damonsalv	damon@gmail.com	  98/99 dubai main	1	  1	  2025-05-19	86.00
+2	richard	    richard@gmail.com 143 washington    2	  2	  2025-05-09	30.00
+1	damonsalv	damon@gmail.com	  98/99 dubai main	4	  1	  2025-05-14	100.00
+
+
+/*total amount of all the products placed by each customer*/
+select c.name, sum(o.total_amount) as total_spent
+from customers c 
+join orders o on c.id = o.customer_id
+group by c.id;
+
+ANS:
+NAME        total_spent
+damonsalv	186.00
+richard	    30.00
+klausmike	70.00
+
+/*update the price of product c to 45.00*/
+
+update products
+set price = 45.00
+where ID= 3;
+
+ANS;
+ID   NAME       PRICE   description
+3	product C	45.00	hair growth serum
+
+
+/*add a new column discount to the products table*/
+
+alter table products 
+add column discount decimal(5,2) default 0.00;
+ 
+ANS:
+id   name      price    description       discount
+1	product A	35.00	razor	            0.00
+2	product B	50.00	bodywash	        0.00
+3	product C	45.00	hair growth serum	0.00
+4	product D	90.00	perfume	            0.00
+				
+
+/*retrive top 3 products with highest price*/
+
+select * from products 
+order by price desc 
+limit 3;
+ANS:
+id   name       price   description        discount
+4	product D	90.00	perfume	            0.00
+2	product B	50.00	bodywash	        0.00
+3	product C	45.00	hair growth serum	0.00
+
+
+
+/*join the order and customers table to retrive the customer name and order date*/
+
+select c.name, o.order_date
+from orders o
+join customers c on o.customer_id=c.id;
+
+ANS:
+NAME        order_date
+damonsalv	2025-05-19
+damonsalv	2025-05-14
+richard	    2025-05-09
+klausmike	2025-04-09
+
+/*retrive the orders with total amount more than 150.00*/
+
+select * from orders
+where total_amount > 150.00;
+
+ANS:
+NIL
+
+/*normalise, create order_items table*/
+
+insert into order_items (order_id, product_id, quantity) values
+(1, 1, 1), /*damon ordered product a*/
+(1, 2, 1), /*damon ordered product b*/
+(2, 3, 2), /*richard ordered 2nos product c*/
+(3, 4, 1), /*klaus ordered product d*/
+(1, 3, 2); /*damon ordered 2nos product c*/
+
+ANS:
+ID  O.ID  P.ID  quantity
+1	 1	    1	   1
+2	 1	    2	   1
+3	 2	    3	   2
+4	 3	    4	   1
+5	 1	    3	   2
+
+/*get the name of customers who ordered product a*/
+ANS:
+damonsalv
+
+/*retrive avg total of all the orders*/
+ANS:
+71.500000	
